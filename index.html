@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sector_Planton – Poker Combat HUD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1b3b20 0, #020a06 60%, #010503 100%);
+      color: #e5f2e5;
+      padding: 20px;
+    }
+
+    .app {
+      background: rgba(8, 16, 12, 0.96);
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 1120px;
+      width: 100%;
+      box-shadow:
+        0 0 0 1px rgba(74, 222, 128, 0.2),
+        0 20px 60px rgba(0, 0, 0, 0.85);
+      border: 1px solid rgba(21, 128, 61, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app::before {
+      content: "SECTOR_PLANTON // POKER COMBAT HUD";
+      position: absolute;
+      top: 8px;
+      right: 20px;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(110, 231, 183, 0.45);
+    }
+
+    .app-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .app-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #bbf7d0;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(74, 222, 128, 0.8);
+      color: #bbf7d0;
+      background: rgba(21, 128, 61, 0.2);
+    }
+
+    .app-subtitle {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.5fr);
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgba(15, 23, 20, 0.94);
+      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid rgba(55, 148, 88, 0.6);
+    }
+
+    .panel h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #a3e635;
+      margin-bottom: 10px;
+    }
+
+    .cards-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-input {
+      flex: 1;
+      min-width: 130px;
+    }
+
+    label {
+      font-size: 0.73rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    select {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: radial-gradient(circle at top, #020617, #020b07);
+      color: #42a774;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: #4ade80;
+      box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.45);
+    }
+
+    .btn-primary {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #4ade80, #16a34a);
+      color: #022c22;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.1s ease;
+      box-shadow: 0 12px 25px rgba(34, 197, 94, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 30px rgba(34, 197, 94, 0.6);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 16px rgba(34, 197, 94, 0.4);
+      opacity: 0.9;
+    }
+
+    .hand-preview {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .poker-card {
+      width: 60px;
+      height: 80px;
+      border-radius: 10px;
+      background: radial-gradient(circle at top, #041118, #020815);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .poker-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 0%, rgba(34, 197, 94, 0.18) 40%, transparent 80%);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .poker-card .rank {
+      font-size: 1.1rem;
+    }
+
+    .poker-card .suit {
+      font-size: 1.2rem;
+      margin-top: 2px;
+    }
+
+    .poker-card.premium {
+      border-color: #facc15;
+      box-shadow: 0 0 18px rgba(250, 204, 21, 0.5);
+    }
+
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      border-radius: 999px;
+      padding: 4px 9px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .tag-strong {
+      border-color: #4ade80;
+      color: #bbf7d0;
+      background: rgba(22, 163, 74, 0.22);
+    }
+
+    .tag-warning {
+      border-color: #f97316;
+      color: #fed7aa;
+      background: rgba(248, 113, 22, 0.22);
+    }
+
+    .tag-danger {
+      border-color: #ef4444;
+      color: #fecaca;
+      background: rgba(239, 68, 68, 0.22);
+    }
+
+    .note {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: #6b7280;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .results-main {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #bbf7d0;
+    }
+
+    .results-main span {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #9ca3af;
+      margin-left: 6px;
+    }
+
+    .suggestion {
+      font-size: 0.86rem;
+      color: #e5e7eb;
+    }
+
+    .suggestion strong {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .gauge {
+      position: relative;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(2, 6, 4, 0.9);
+      overflow: hidden;
+      margin: 10px 0 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .gauge-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ef4444, #f97316, #facc15, #22c55e);
+      transition: width 0.35s ease-out;
+    }
+
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .multi-equity {
+      margin-top: 10px;
+      border-top: 1px dashed rgba(55, 65, 81, 0.8);
+      padding-top: 10px;
+      display: grid;
+      gap: 6px;
+      font-size: 0.8rem;
+    }
+
+    .multi-equity-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .multi-equity-row span:first-child {
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+    }
+
+    .disclaimer {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: #9ca3af;
+    }
+
+    .strategy-header {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .decision-bars {
+      margin-top: 12px;
+      display: grid;
+      gap: 6px;
+      font-size: 0.8rem;
+    }
+
+    .decision-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .decision-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      font-size: 0.7rem;
+    }
+
+    .decision-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(2, 6, 4, 0.9);
+      overflow: hidden;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .decision-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      transition: width 0.3s ease-out;
+    }
+
+    .decision-fill.fold {
+      background: linear-gradient(90deg, #7f1d1d, #ef4444);
+    }
+
+    .decision-fill.call {
+      background: linear-gradient(90deg, #7c2d12, #f97316);
+    }
+
+    .decision-fill.shove {
+      background: linear-gradient(90deg, #14532d, #22c55e);
+    }
+
+    .decision-pct {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+    }
+
+    /* RESPONSIVE */
+
+    /* 1) Sub 1024px: o singură coloană */
+    @media (max-width: 1024px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 2) Sub 768px: header compact, padding mai mic, app label mutat */
+    @media (max-width: 768px) {
+      body {
+        align-items: flex-start;
+        padding: 12px;
+      }
+
+      .app {
+        padding: 16px;
+      }
+
+      .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .app::before {
+        position: static;
+        display: block;
+        margin-bottom: 8px;
+        right: auto;
+        top: auto;
+      }
+
+      .app-title {
+        font-size: 1.2rem;
+        letter-spacing: 0.08em;
+      }
+
+      .app-subtitle {
+        font-size: 0.8rem;
+      }
+
+      .badge {
+        font-size: 0.65rem;
+      }
+    }
+
+    /* 3) Sub 600px: rânduri de input în coloană, cărți mai mici, tag-uri pot rupe rândul */
+    @media (max-width: 600px) {
+      .cards-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .card-input {
+        min-width: 100%;
+      }
+
+      .tag {
+        white-space: normal;
+      }
+
+      .results-main {
+        font-size: 1.6rem;
+      }
+
+      .poker-card {
+        width: 48px;
+        height: 68px;
+      }
+    }
+
+    /* 4) Sub 400px: text și mai compact */
+    @media (max-width: 400px) {
+      .app {
+        border-radius: 12px;
+      }
+
+      .app-subtitle {
+        font-size: 0.75rem;
+      }
+
+      label {
+        font-size: 0.68rem;
+      }
+
+      .gauge-labels span {
+        font-size: 0.62rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="app-header">
+      <div>
+        <div class="app-title">
+          SECTOR_PLANTON
+          <span class="badge">Preflop → River • Spot Trainer</span>
+        </div>
+        <p class="app-subtitle">
+          Alege-ți mâna, board-ul, poziția exactă și până la 3 adversari cu acțiunile lor. /
+          Choose your hand, board, exact position and up to 3 villains with their actions.
+          HUD-ul îți dă o echitate aproximativă și un mix Fold / Call / Raise-All-In. /
+          HUD gives approximate equity and a Fold / Call / Raise-All-In mix.
+        </p>
+      </div>
+      <div class="app-subtitle">
+        Mod / Mode: <strong>Ops Room / Overlay pentru stream</strong>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- PANOU INPUT -->
+      <div class="panel">
+        <h2>1. Mâna Hero / Hero hand</h2>
+
+        <div class="cards-row">
+          <div class="card-input">
+            <label for="rank1">Carte 1 / Card 1</label>
+            <select id="rank1">
+              <option value="A">A</option>
+              <option value="K">K</option>
+              <option value="Q">Q</option>
+              <option value="J">J</option>
+              <option value="T">T</option>
+              <option value="9">9</option>
+              <option value="8">8</option>
+              <option value="7">7</option>
+              <option value="6">6</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+          <div class="card-input">
+            <label>&nbsp;</label>
+            <select id="suit1">
+              <option value="♠">♠ Pică / Spades</option>
+              <option value="♥">♥ Cupă / Hearts</option>
+              <option value="♦">♦ Romb / Diamonds</option>
+              <option value="♣">♣ Treflă / Clubs</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cards-row">
+          <div class="card-input">
+            <label for="rank2">Carte 2 / Card 2</label>
+            <select id="rank2">
+              <option value="K">K</option>
+              <option value="A">A</option>
+              <option value="Q">Q</option>
+              <option value="J">J</option>
+              <option value="T">T</option>
+              <option value="9">9</option>
+              <option value="8">8</option>
+              <option value="7">7</option>
+              <option value="6">6</option>
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+            </select>
+          </div>
+          <div class="card-input">
+            <label>&nbsp;</label>
+            <select id="suit2">
+              <option value="♥">♥ Cupă / Hearts</option>
+              <option value="♠">♠ Pică / Spades</option>
+              <option value="♦">♦ Romb / Diamonds</option>
+              <option value="♣">♣ Treflă / Clubs</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="hand-preview" id="handPreview"></div>
+
+        <div class="info-row">
+          <div class="tag" id="handLabel">Preflop – în așteptare… / waiting…</div>
+          <div class="tag" id="playStyleTag">Stil de joc / Play style: –</div>
+        </div>
+
+        <p class="note">
+          Lasă board-ul gol pentru doar preflop. / Leave board empty for pure preflop.
+          Adaugă flop / turn / river ca să exersezi deciziile postflop. /
+          Add flop / turn / river to train postflop decisions.
+        </p>
+
+        <!-- BOARD -->
+        <div style="margin-top:18px;">
+          <h2>2. Board (flop / turn / river)</h2>
+
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="modeSelect">Situație / Scenario</label>
+              <select id="modeSelect">
+                <option value="preflop">
+                  Doar preflop (ignoră board-ul) / Preflop only (ignore board)
+                </option>
+                <option value="board" selected>
+                  Folosește board-ul (flop / turn / river) / Use board (flop / turn / river)
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- FLOP -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="f1Rank">Flop 1</label>
+              <select id="f1Rank">
+                <option value="">–</option>
+                <option value="A">A</option><option value="K">K</option>
+                <option value="Q">Q</option><option value="J">J</option>
+                <option value="T">T</option><option value="9">9</option>
+                <option value="8">8</option><option value="7">7</option>
+                <option value="6">6</option><option value="5">5</option>
+                <option value="4">4</option><option value="3">3</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label>&nbsp;</label>
+              <select id="f1Suit">
+                <option value="♠">♠</option>
+                <option value="♥">♥</option>
+                <option value="♦">♦</option>
+                <option value="♣">♣</option>
+              </select>
+            </div>
+
+            <div class="card-input">
+              <label for="f2Rank">Flop 2</label>
+              <select id="f2Rank">
+                <option value="">–</option>
+                <option value="A">A</option><option value="K">K</option>
+                <option value="Q">Q</option><option value="J">J</option>
+                <option value="T">T</option><option value="9">9</option>
+                <option value="8">8</option><option value="7">7</option>
+                <option value="6">6</option><option value="5">5</option>
+                <option value="4">4</option><option value="3">3</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label>&nbsp;</label>
+              <select id="f2Suit">
+                <option value="♠">♠</option>
+                <option value="♥">♥</option>
+                <option value="♦">♦</option>
+                <option value="♣">♣</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="f3Rank">Flop 3</label>
+              <select id="f3Rank">
+                <option value="">–</option>
+                <option value="A">A</option><option value="K">K</option>
+                <option value="Q">Q</option><option value="J">J</option>
+                <option value="T">T</option><option value="9">9</option>
+                <option value="8">8</option><option value="7">7</option>
+                <option value="6">6</option><option value="5">5</option>
+                <option value="4">4</option><option value="3">3</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label>&nbsp;</label>
+              <select id="f3Suit">
+                <option value="♠">♠</option>
+                <option value="♥">♥</option>
+                <option value="♦">♦</option>
+                <option value="♣">♣</option>
+              </select>
+            </div>
+
+            <!-- TURN -->
+            <div class="card-input">
+              <label for="tRank">Turn</label>
+              <select id="tRank">
+                <option value="">–</option>
+                <option value="A">A</option><option value="K">K</option>
+                <option value="Q">Q</option><option value="J">J</option>
+                <option value="T">T</option><option value="9">9</option>
+                <option value="8">8</option><option value="7">7</option>
+                <option value="6">6</option><option value="5">5</option>
+                <option value="4">4</option><option value="3">3</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label>&nbsp;</label>
+              <select id="tSuit">
+                <option value="♠">♠</option>
+                <option value="♥">♥</option>
+                <option value="♦">♦</option>
+                <option value="♣">♣</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- RIVER -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="rRank">River</label>
+              <select id="rRank">
+                <option value="">–</option>
+                <option value="A">A</option><option value="K">K</option>
+                <option value="Q">Q</option><option value="J">J</option>
+                <option value="T">T</option><option value="9">9</option>
+                <option value="8">8</option><option value="7">7</option>
+                <option value="6">6</option><option value="5">5</option>
+                <option value="4">4</option><option value="3">3</option>
+                <option value="2">2</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label>&nbsp;</label>
+              <select id="rSuit">
+                <option value="♠">♠</option>
+                <option value="♥">♥</option>
+                <option value="♦">♦</option>
+                <option value="♣">♣</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- MASĂ & ADVERSARI -->
+        <div style="margin-top:18px;">
+          <h2>3. Masă, poziția Hero & adversari / Table, Hero position & villains</h2>
+
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="tableSize">Mărimea mesei / Table size</label>
+              <select id="tableSize">
+                <option value="6">6-max</option>
+                <option value="7">7 jucători / players</option>
+                <option value="8">8 jucători / players</option>
+                <option value="9" selected>9-max</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="playersInPot">Jucători în pot / Players in pot</label>
+              <select id="playersInPot">
+                <option value="2">2 (Heads-Up)</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="blindSize">Big blind</label>
+              <select id="blindSize">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200+</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="heroPos">Poziția Hero / Hero position</label>
+              <select id="heroPos">
+                <option value="utg">UTG</option>
+                <option value="lj">LJ</option>
+                <option value="hj">HJ</option>
+                <option value="co">CO</option>
+                <option value="btn" selected>BTN</option>
+                <option value="sb">SB</option>
+                <option value="bb">BB</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="note">
+            Setează până la 3 adversari (poziție + acțiune). / Set up to 3 villains (position + action).
+            Lasă „None” dacă nu îi folosești. / Leave "None" if unused.
+          </p>
+
+          <!-- VILLAIN 1 -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="villain1Pos">Adversar 1 poziție / Villain 1 position</label>
+              <select id="villain1Pos">
+                <option value="">None</option>
+                <option value="utg">UTG</option>
+                <option value="lj">LJ</option>
+                <option value="hj">HJ</option>
+                <option value="co">CO</option>
+                <option value="btn">BTN</option>
+                <option value="sb">SB</option>
+                <option value="bb">BB</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="villain1Act">Acțiune / Action</label>
+              <select id="villain1Act">
+                <option value="none">None</option>
+                <option value="fold">Fold</option>
+                <option value="limp">Limp / Call</option>
+                <option value="open">Open-raise</option>
+                <option value="call">Call vs raise</option>
+                <option value="3bet">3-bet</option>
+                <option value="4bet">4-bet+</option>
+                <option value="allin">All-in</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- VILLAIN 2 -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="villain2Pos">Adversar 2 poziție / Villain 2 position</label>
+              <select id="villain2Pos">
+                <option value="">None</option>
+                <option value="utg">UTG</option>
+                <option value="lj">LJ</option>
+                <option value="hj">HJ</option>
+                <option value="co">CO</option>
+                <option value="btn">BTN</option>
+                <option value="sb">SB</option>
+                <option value="bb">BB</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="villain2Act">Acțiune / Action</label>
+              <select id="villain2Act">
+                <option value="none">None</option>
+                <option value="fold">Fold</option>
+                <option value="limp">Limp / Call</option>
+                <option value="open">Open-raise</option>
+                <option value="call">Call vs raise</option>
+                <option value="3bet">3-bet</option>
+                <option value="4bet">4-bet+</option>
+                <option value="allin">All-in</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- VILLAIN 3 -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="villain3Pos">Adversar 3 poziție / Villain 3 position</label>
+              <select id="villain3Pos">
+                <option value="">None</option>
+                <option value="utg">UTG</option>
+                <option value="lj">LJ</option>
+                <option value="hj">HJ</option>
+                <option value="co">CO</option>
+                <option value="btn">BTN</option>
+                <option value="sb">SB</option>
+                <option value="bb">BB</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="villain3Act">Acțiune / Action</label>
+              <select id="villain3Act">
+                <option value="none">None</option>
+                <option value="fold">Fold</option>
+                <option value="limp">Limp / Call</option>
+                <option value="open">Open-raise</option>
+                <option value="call">Call vs raise</option>
+                <option value="3bet">3-bet</option>
+                <option value="4bet">4-bet+</option>
+                <option value="allin">All-in</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="calcBtn">Calculează spotul / Calculate spot</button>
+      </div>
+
+      <!-- PANOU REZULTATE -->
+      <div class="panel">
+        <h2>4. Forță mână & recomandare acțiune / Hand strength & action suggestion</h2>
+
+        <div class="results-header">
+          <div class="results-main" id="mainEquity">
+            0% <span>preflop vs 1 adversar random / vs 1 random opponent</span>
+          </div>
+        </div>
+
+        <div class="gauge">
+          <div class="gauge-fill" id="gaugeFill"></div>
+        </div>
+        <div class="gauge-labels">
+          <span>Slabă / Weak</span>
+          <span>Jucabilă / Playable</span>
+          <span>Puternică / Strong</span>
+          <span>Premium</span>
+        </div>
+
+        <p class="suggestion" id="suggestionText">
+          Setează situația și apasă <strong>CALCULEAZĂ SPOTUL</strong>. /
+          Configure the situation and press <strong>CALCULATE SPOT</strong>.
+        </p>
+
+        <div class="multi-equity">
+          <div class="multi-equity-row">
+            <span>2 ADVERSARI / 2 OPPONENTS</span>
+            <span id="eq2">–</span>
+          </div>
+          <div class="multi-equity-row">
+            <span>3 ADVERSARI / 3 OPPONENTS</span>
+            <span id="eq3">–</span>
+          </div>
+        </div>
+
+        <div class="strategy-header">
+          <div class="tag" id="stageTag">Stradă / Street: Preflop</div>
+          <div class="tag" id="mainActionTag">Recomandare / Recommendation: –</div>
+        </div>
+
+        <p class="note" id="handTypeInfo">
+          Tipul mâinii curente / Current hand type: –
+        </p>
+        <p class="note" id="villainSummary">
+          Acțiunile celorlalți: niciuna (pot nedeschis). / Other actions: none (unopened pot).
+        </p>
+
+        <div class="decision-bars">
+          <div class="decision-row">
+            <span class="decision-label">Fold</span>
+            <div class="decision-bar">
+              <div class="decision-fill fold" id="foldBar"></div>
+            </div>
+            <span class="decision-pct" id="foldPct">0%</span>
+          </div>
+          <div class="decision-row">
+            <span class="decision-label">Call</span>
+            <div class="decision-bar">
+              <div class="decision-fill call" id="callBar"></div>
+            </div>
+            <span class="decision-pct" id="callPct">0%</span>
+          </div>
+          <div class="decision-row">
+            <span class="decision-label">Raise / All-in</span>
+            <div class="decision-bar">
+              <div class="decision-fill shove" id="shoveBar"></div>
+            </div>
+            <span class="decision-pct" id="shovePct">0%</span>
+          </div>
+        </div>
+
+        <p class="disclaimer">
+          Trainer euristic, nu solver GTO. / Heuristic trainer, not a GTO solver.
+          Echitatea și recomandările sunt aproximări bazate pe tipul mâinii, poziție,
+          mărimea mesei, acțiunile adversarilor și presiunea blindurilor – nu reprezintă
+          sfat exact pentru joc pe bani reali. /
+          Equity & decisions are approximations based on hand class, position, table size,
+          villains' actions and blind pressure – not precise real-money advice.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const rankValues = {
+      A: 14, K: 13, Q: 12, J: 11,
+      T: 10, 9: 9, 8: 8, 7: 7,
+      6: 6, 5: 5, 4: 4, 3: 3, 2: 2
+    };
+
+    const pairEquityTable = {
+      AA: 85, KK: 82, QQ: 80, JJ: 78,
+      TT: 75, 99: 72, 88: 69, 77: 66,
+      66: 63, 55: 60, 44: 57, 33: 54, 22: 51
+    };
+
+    const actionWeights = {
+      none: 0,
+      fold: 0,
+      limp: 2,
+      open: 4,
+      call: 3,
+      "3bet": 7,
+      "4bet": 10,
+      allin: 11
+    };
+
+    function sortRanks(r1, r2) {
+      return rankValues[r1] >= rankValues[r2] ? [r1, r2] : [r2, r1];
+    }
+
+    function evaluatePreflop(rank1, suit1, rank2, suit2) {
+      const [hi, lo] = sortRanks(rank1, rank2);
+      const suited = suit1 === suit2;
+      const keyPair = hi === lo ? hi + lo : null;
+
+      if (keyPair && pairEquityTable[keyPair]) {
+        return pairEquityTable[keyPair];
+      }
+
+      const hiVal = rankValues[hi];
+      const loVal = rankValues[lo];
+
+      let equity = (hiVal - 2) * 2.0 + (loVal - 2) * 0.8 + 20;
+
+      if (suited) equity += 4;
+
+      const gap = hiVal - loVal;
+      if (gap === 1) equity += 4;
+      else if (gap === 2) equity += 2;
+      else if (gap === 3) equity -= 1;
+      else if (gap >= 4) equity -= 3;
+
+      if (!suited && hiVal <= 9 && loVal <= 7 && gap >= 4) {
+        equity -= 4;
+      }
+
+      equity = Math.max(30, Math.min(70, equity));
+      return Math.round(equity);
+    }
+
+    function classifyPreflop(equity) {
+      if (equity >= 78) return { key: "premium" };
+      if (equity >= 70) return { key: "veryStrong" };
+      if (equity >= 60) return { key: "strong" };
+      if (equity >= 52) return { key: "playable" };
+      if (equity >= 45) return { key: "marginal" };
+      return { key: "trash" };
+    }
+
+    function hasStraight(uniqueVals) {
+      if (uniqueVals.length < 5) return null;
+
+      const vals = [...uniqueVals].sort((a, b) => a - b);
+      if (vals.includes(14)) vals.push(1); // roată A-5
+
+      let bestHigh = null;
+      let run = 1;
+
+      for (let i = 1; i < vals.length; i++) {
+        if (vals[i] === vals[i - 1] + 1) {
+          run++;
+          if (run >= 5) bestHigh = vals[i];
+        } else if (vals[i] !== vals[i - 1]) {
+          run = 1;
+        }
+      }
+      return bestHigh;
+    }
+
+    // Tipul mâinii la showdown + o bandă de forță
+    function getHandCategory(cards) {
+      const rankCount = {};
+      const suitCount = {};
+      const vals = [];
+
+      for (const c of cards) {
+        const v = rankValues[c.rank];
+        vals.push(v);
+        rankCount[v] = (rankCount[v] || 0) + 1;
+        suitCount[c.suit] = (suitCount[c.suit] || 0) + 1;
+      }
+
+      const uniqueVals = [...new Set(vals)];
+
+      let flushSuit = null;
+      for (const s in suitCount) {
+        if (Object.prototype.hasOwnProperty.call(suitCount, s) && suitCount[s] >= 5) {
+          flushSuit = s;
+          break;
+        }
+      }
+
+      if (flushSuit) {
+        const flushVals = cards
+          .filter(c => c.suit === flushSuit)
+          .map(c => rankValues[c.rank]);
+        const sfHigh = hasStraight([...new Set(flushVals)]);
+        if (sfHigh) {
+          return { key: "straightFlush", base: 95, band: "veryStrong" };
+        }
+      }
+
+      const four = [];
+      const three = [];
+      const pairs = [];
+
+      for (const v in rankCount) {
+        if (!Object.prototype.hasOwnProperty.call(rankCount, v)) continue;
+        if (rankCount[v] === 4) four.push(parseInt(v, 10));
+        else if (rankCount[v] === 3) three.push(parseInt(v, 10));
+        else if (rankCount[v] === 2) pairs.push(parseInt(v, 10));
+      }
+
+      if (four.length) return { key: "fourKind", base: 92, band: "veryStrong" };
+      if ((three.length && pairs.length) || three.length >= 2) {
+        return { key: "fullHouse", base: 88, band: "veryStrong" };
+      }
+
+      if (flushSuit) return { key: "flush", base: 82, band: "strong" };
+
+      const straightHigh = hasStraight(uniqueVals);
+      if (straightHigh) return { key: "straight", base: 78, band: "strong" };
+
+      if (three.length) return { key: "threeKind", base: 73, band: "strong" };
+      if (pairs.length >= 2) return { key: "twoPair", base: 68, band: "medium" };
+      if (pairs.length === 1) return { key: "onePair", base: 58, band: "medium" };
+
+      return { key: "highCard", base: 30, band: "weak" };
+    }
+
+    function approximateMultiwayEquity(eqVs1, opponents) {
+      if (opponents <= 1) return eqVs1;
+      const factor = opponents === 2 ? 0.82 : opponents === 3 ? 0.68 : 0.6;
+      return Math.round(eqVs1 * factor);
+    }
+
+    function positionLabel(pos) {
+      switch (pos) {
+        case "utg": return "UTG";
+        case "lj": return "LJ";
+        case "hj": return "HJ";
+        case "co": return "CO";
+        case "btn": return "BTN";
+        case "sb": return "SB";
+        case "bb": return "BB";
+        default: return pos || "-";
+      }
+    }
+
+    function actionLabel(act) {
+      switch (act) {
+        case "fold": return "Fold";
+        case "limp": return "Limp / Call";
+        case "open": return "Open-raise";
+        case "call": return "Call vs raise";
+        case "3bet": return "3-bet";
+        case "4bet": return "4-bet+";
+        case "allin": return "All-in";
+        default: return "None";
+      }
+    }
+
+    function computeDecisionMix(equity, tableSize, playersInPot, blindSize, heroPos, stage, pressureScore) {
+      let score = (equity - 50) * 2;
+
+      let posMod = 0;
+      if (heroPos === "utg") posMod = -14;
+      else if (heroPos === "lj") posMod = -10;
+      else if (heroPos === "hj") posMod = -6;
+      else if (heroPos === "co") posMod = 2;
+      else if (heroPos === "btn") posMod = 8;
+      else if (heroPos === "sb") posMod = -8;
+      else if (heroPos === "bb") posMod = -4;
+      score += posMod;
+
+      const extraPlayers = Math.max(0, playersInPot - 2);
+      score += extraPlayers * -4;
+
+      if (tableSize >= 9) score -= 4;
+      else if (tableSize === 8) score -= 2;
+      else if (tableSize === 6) score += 2;
+
+      let blindPressure = 0;
+      if (blindSize >= 200) blindPressure = 8;
+      else if (blindSize >= 100) blindPressure = 6;
+      else if (blindSize >= 50) blindPressure = 4;
+      else if (blindSize >= 25) blindPressure = 2;
+
+      if (equity >= 65) score += blindPressure;
+      else if (equity < 50) score -= Math.round(blindPressure / 2);
+
+      score -= pressureScore;
+
+      if (equity >= 70 && pressureScore >= 8) {
+        score += 6;
+      }
+
+      if (stage === "river" && equity >= 70) {
+        score += 6;
+      }
+
+      score = Math.max(-40, Math.min(40, score));
+
+      let fold;
+      let call;
+      let shove;
+
+      if (score <= -15) {
+        fold = 85; call = 15; shove = 0;
+      } else if (score <= 5) {
+        fold = 50 + Math.round(-score / 2);
+        call = 40 - Math.round(-score / 3);
+        shove = 10;
+      } else if (score <= 20) {
+        fold = 25 - Math.round(score / 5);
+        call = 45;
+        shove = 30 + Math.round(score / 4);
+      } else {
+        fold = 5; call = 25; shove = 70;
+      }
+
+      const total = fold + call + shove;
+      fold = Math.round((fold / total) * 100);
+      call = Math.round((call / total) * 100);
+      shove = 100 - fold - call;
+
+      let mainAction = "Fold";
+      let tagClass = "tag-danger";
+      let style = "Fold în majoritatea cazurilor / Fold in most spots";
+
+      if (call >= fold && call >= shove) {
+        mainAction = "Call / Flat";
+        tagClass = "tag-warning";
+        style = "Call / controlul potului / Pot control";
+      }
+      if (shove >= fold && shove >= call) {
+        mainAction = "Raise / All-in";
+        tagClass = "tag-strong";
+        style = "Linie agresivă recomandată / Aggressive line recommended";
+      }
+
+      return { fold, call, shove, mainAction, tagClass, style };
+    }
+
+    function renderHandPreview(heroCards, boardCards, highlightPremium) {
+      const preview = document.getElementById("handPreview");
+      preview.innerHTML = "";
+
+      const makeCard = (card, highlight) => {
+        const div = document.createElement("div");
+        div.className = "poker-card";
+        if (highlight) div.classList.add("premium");
+
+        const r = document.createElement("div");
+        r.className = "rank";
+        r.textContent = card.rank;
+
+        const s = document.createElement("div");
+        s.className = "suit";
+        s.textContent = card.suit;
+
+        div.appendChild(r);
+        div.appendChild(s);
+        return div;
+      };
+
+      heroCards.forEach(c => preview.appendChild(makeCard(c, highlightPremium)));
+      boardCards.forEach(c => preview.appendChild(makeCard(c, false)));
+    }
+
+    function getBoardCards() {
+      const board = [];
+      const picks = [
+        ["f1Rank", "f1Suit"],
+        ["f2Rank", "f2Suit"],
+        ["f3Rank", "f3Suit"],
+        ["tRank", "tSuit"],
+        ["rRank", "rSuit"]
+      ];
+
+      for (const [rId, sId] of picks) {
+        const r = document.getElementById(rId).value;
+        const s = document.getElementById(sId).value;
+        if (r) board.push({ rank: r, suit: s });
+      }
+      return board;
+    }
+
+    function getStage(boardCards) {
+      if (boardCards.length === 0) return "preflop";
+      if (boardCards.length <= 3) return "flop";
+      if (boardCards.length === 4) return "turn";
+      return "river";
+    }
+
+    function updateUI() {
+      const r1 = document.getElementById("rank1").value;
+      const s1 = document.getElementById("suit1").value;
+      const r2 = document.getElementById("rank2").value;
+      const s2 = document.getElementById("suit2").value;
+
+      if (r1 === r2 && s1 === s2) {
+        alert("Nu poți selecta exact aceeași carte de două ori. / You can't select the exact same card twice.");
+        return;
+      }
+
+      const heroCards = [
+        { rank: r1, suit: s1 },
+        { rank: r2, suit: s2 }
+      ];
+
+      const mode = document.getElementById("modeSelect").value;
+      let boardCards = getBoardCards();
+      if (mode === "preflop") {
+        boardCards = [];
+      }
+
+      const stage = getStage(boardCards);
+
+      const tableSize = parseInt(document.getElementById("tableSize").value, 10);
+      const playersDrop = parseInt(document.getElementById("playersInPot").value, 10);
+      const blindSize = parseInt(document.getElementById("blindSize").value, 10);
+      const heroPos = document.getElementById("heroPos").value;
+
+      const villains = [
+        { pos: document.getElementById("villain1Pos").value, act: document.getElementById("villain1Act").value },
+        { pos: document.getElementById("villain2Pos").value, act: document.getElementById("villain2Act").value },
+        { pos: document.getElementById("villain3Pos").value, act: document.getElementById("villain3Act").value }
+      ];
+
+      let pressureScore = 0;
+      let nonFoldVillains = 0;
+      const summaryParts = [];
+
+      villains.forEach(v => {
+        if (!v.pos || v.act === "none") return;
+        const w = actionWeights[v.act] || 0;
+        pressureScore += w;
+        if (v.act !== "fold") nonFoldVillains++;
+        summaryParts.push(`${positionLabel(v.pos)}: ${actionLabel(v.act)}`);
+      });
+
+      let effectivePlayers = Math.max(playersDrop, 1 + nonFoldVillains);
+      if (effectivePlayers > tableSize) effectivePlayers = tableSize;
+
+      let eq1;
+      let eq2;
+      let eq3;
+      let mainText;
+      let handLabelText;
+      let handLabelClass;
+      let styleText;
+      let handTypeText;
+
+      if (stage === "preflop") {
+        eq1 = evaluatePreflop(r1, s1, r2, s2);
+        const pre = classifyPreflop(eq1);
+
+        const preLabels = {
+          premium: "Premium",
+          veryStrong: "Foarte puternică / Very strong",
+          strong: "Puternică / Strong",
+          playable: "Jucabilă / Playable",
+          marginal: "Marginală / Marginal",
+          trash: "Slabă / Trash"
+        };
+
+        const preStyles = {
+          premium: "Raise / 3-bet (value mare) / strong value",
+          veryStrong: "Raise în majoritatea spoturilor / Raise in most spots",
+          strong: "Open / call în poziție / Open / call in position",
+          playable: "Depinde de poziție și acțiune / Depends on position & action",
+          marginal: "Mai mult fold – uneori apără blind-urile / Mostly fold – sometimes defend blinds",
+          trash: "Fold preflop aproape mereu / Almost always fold preflop"
+        };
+
+        handLabelText = preLabels[pre.key];
+        handLabelClass =
+          pre.key === "premium" || pre.key === "veryStrong" || pre.key === "strong"
+            ? "tag-strong"
+            : pre.key === "marginal"
+            ? "tag-warning"
+            : pre.key === "trash"
+            ? "tag-danger"
+            : "";
+
+        styleText = preStyles[pre.key];
+        handTypeText =
+          "Doar preflop – tipul mâinii bazat pe cărțile de start. / Preflop only – hand category based on starting cards.";
+        mainText = `${eq1}% <span>preflop vs 1 adversar random / vs 1 random opponent</span>`;
+      } else {
+        const allCards = heroCards.concat(boardCards);
+        const cat = getHandCategory(allCards);
+
+        let stageMod = 0;
+        if (stage === "turn") stageMod = 2;
+        else if (stage === "river") stageMod = 5;
+
+        eq1 = Math.max(20, Math.min(98, cat.base + stageMod));
+
+        const catLabels = {
+          straightFlush: "Chintă de culoare / Straight flush",
+          fourKind: "Careu / Four of a kind",
+          fullHouse: "Full house",
+          flush: "Culoare / Flush",
+          straight: "Chintă / Straight",
+          threeKind: "Trips / Set",
+          twoPair: "Două perechi / Two pair",
+          onePair: "O pereche / One pair",
+          highCard: "High card"
+        };
+
+        const catStyles = {
+          veryStrong:
+            "Foarte puternică – value bet / raise des. / Very strong – value bet / raise often.",
+          strong:
+            "Puternică – value bet / protejează mâna. / Strong – value bet / protect the hand.",
+          medium:
+            "Mediu – controlul potului / call la sizing normal. / Medium – pot control / call vs normal sizings.",
+          weak:
+            "Slabă – de obicei fold la agresiune. / Weak – mostly fold vs aggression."
+        };
+
+        handLabelText = catLabels[cat.key];
+        handLabelClass =
+          cat.band === "veryStrong"
+            ? "tag-strong"
+            : cat.band === "strong"
+            ? "tag-strong"
+            : cat.band === "medium"
+            ? ""
+            : "tag-danger";
+
+        styleText = catStyles[cat.band];
+        handTypeText =
+          `Mână pe board: ${catLabels[cat.key]}. / Hand on board: ${catLabels[cat.key]}. ` +
+          `Echitate aproximativă vs adversar random pe ${stage.toUpperCase()} / ` +
+          `approx. equity vs random hand on ${stage.toUpperCase()}.`;
+
+        mainText = `${eq1}% <span>${stage} vs 1 adversar random / vs 1 random opponent</span>`;
+      }
+
+      eq2 = approximateMultiwayEquity(eq1, 2);
+      eq3 = approximateMultiwayEquity(eq1, 3);
+
+      document.getElementById("mainEquity").innerHTML = mainText;
+      document.getElementById("gaugeFill").style.width = `${eq1}%`;
+
+      const handLabel = document.getElementById("handLabel");
+      handLabel.textContent = handLabelText;
+      handLabel.className = `tag ${handLabelClass || ""}`;
+
+      const playStyleTag = document.getElementById("playStyleTag");
+      playStyleTag.textContent = `Stil de joc / Play style: ${styleText}`;
+      playStyleTag.className = `tag ${handLabelClass || ""}`;
+
+      const suggestion = document.getElementById("suggestionText");
+      suggestion.innerHTML =
+        `<strong>Stradă / Street:</strong> ${stage.toUpperCase()} • ` +
+        `<strong>Hero:</strong> ${positionLabel(heroPos)} • ` +
+        `<strong>Echitate aprox. / Approx. equity:</strong> ${eq1}% heads-up.`;
+
+      document.getElementById("eq2").textContent = `${eq2}% vs 2 adversari / opponents`;
+      document.getElementById("eq3").textContent = `${eq3}% vs 3 adversari / opponents`;
+
+      document.getElementById("stageTag").textContent = `Stradă / Street: ${stage.toUpperCase()}`;
+      document.getElementById("handTypeInfo").textContent = handTypeText;
+
+      const villainSummary = document.getElementById("villainSummary");
+      villainSummary.textContent =
+        summaryParts.length
+          ? `Acțiunile celorlalți / Other actions: ${summaryParts.join(" • ")}`
+          : "Acțiunile celorlalți: niciuna (pot nedeschis / pasiv). / Other actions: none (unopened / passive pot).";
+
+      const decision = computeDecisionMix(
+        eq1,
+        tableSize,
+        effectivePlayers,
+        blindSize,
+        heroPos,
+        stage,
+        pressureScore
+      );
+
+      document.getElementById("foldBar").style.width = `${decision.fold}%`;
+      document.getElementById("callBar").style.width = `${decision.call}%`;
+      document.getElementById("shoveBar").style.width = `${decision.shove}%`;
+      document.getElementById("foldPct").textContent = `${decision.fold}%`;
+      document.getElementById("callPct").textContent = `${decision.call}%`;
+      document.getElementById("shovePct").textContent = `${decision.shove}%`;
+
+      const mainActionTag = document.getElementById("mainActionTag");
+      mainActionTag.textContent = `Recomandare / Recommendation: ${decision.mainAction}`;
+      mainActionTag.className = `tag ${decision.tagClass}`;
+
+      const isPremiumPreflop = stage === "preflop" && handLabelText.startsWith("Premium");
+      renderHandPreview(heroCards, boardCards, isPremiumPreflop);
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", updateUI);
+    updateUI();
+  </script>
+</body>
+</html>
