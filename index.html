@@ -5,11 +5,11 @@
   <title>Sector_Planton – Poker Combat HUD</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- FAVICON & APP ICONS (același logo pentru toate, din link-ul tău) -->
-  <link rel="icon" type="image/png" sizes="32x32" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png">
-  <link rel="apple-touch-icon" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png">
-  <meta name="theme-color" content="#052e16" />
+  <!-- Favicon & mobile icons (PNG folosit pentru desktop, Android, iOS) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png" />
+  <link rel="apple-touch-icon" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png" />
+  <link rel="shortcut icon" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png" />
 
   <style>
     * {
@@ -63,29 +63,6 @@
       margin-bottom: 20px;
     }
 
-    .app-header-left {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .app-logo {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      object-fit: cover;
-      box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.4),
-        0 10px 25px rgba(0, 0, 0, 0.7);
-      background: #052e16;
-    }
-
-    .title-block {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
     .app-title {
       font-size: 1.4rem;
       font-weight: 700;
@@ -95,6 +72,14 @@
       align-items: center;
       gap: 10px;
       color: #bbf7d0;
+    }
+
+    .app-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      object-fit: cover;
+      box-shadow: 0 0 16px rgba(74, 222, 128, 0.7);
     }
 
     .badge {
@@ -455,13 +440,12 @@
       .app-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
       }
 
       .app::before {
         position: static;
         display: block;
-        margin-bottom: 4px;
+        margin-bottom: 8px;
         right: auto;
         top: auto;
       }
@@ -471,18 +455,17 @@
         letter-spacing: 0.08em;
       }
 
+      .app-logo {
+        width: 28px;
+        height: 28px;
+      }
+
       .app-subtitle {
         font-size: 0.8rem;
       }
 
       .badge {
         font-size: 0.65rem;
-      }
-
-      .app-logo {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
       }
     }
 
@@ -532,20 +515,18 @@
 <body>
   <div class="app">
     <div class="app-header">
-      <div class="app-header-left">
-        <img src="https://i.ibb.co/RTg9NnBZ/logo-PCH.png" alt="Poker Combat HUD logo" class="app-logo">
-        <div class="title-block">
-          <div class="app-title">
-            SECTOR_PLANTON
-            <span class="badge">Preflop → River • Spot Trainer</span>
-          </div>
-          <p class="app-subtitle">
-            Alege-ți mâna, board-ul, poziția exactă și până la 3 adversari cu acțiunile lor. /
-            Choose your hand, board, exact position and up to 3 villains with their actions.
-            HUD-ul îți dă o echitate aproximativă și un mix Fold / Call / Raise-All-In. /
-            HUD gives approximate equity and a Fold / Call / Raise-All-In mix.
-          </p>
+      <div>
+        <div class="app-title">
+          <img src="https://i.ibb.co/RTg9NnBZ/logo-PCH.png" alt="Poker Combat HUD logo" class="app-logo" />
+          SECTOR_PLANTON
+          <span class="badge">Preflop → River • Spot Trainer</span>
         </div>
+        <p class="app-subtitle">
+          Alege-ți mâna, board-ul, poziția exactă și până la 3 adversari cu acțiunile lor. /
+          Choose your hand, board, exact position and up to 3 villains with their actions.
+          HUD-ul îți dă o echitate aproximativă și un mix Fold / Call / Raise-All-In. /
+          HUD gives approximate equity and a Fold / Call / Raise-All-In mix.
+        </p>
       </div>
       <div class="app-subtitle">
         Mod / Mode: <strong>Ops Room / Overlay pentru stream</strong>
@@ -788,7 +769,7 @@
               </select>
             </div>
             <div class="card-input">
-              <label for="playersInPot">Jucători în pot / Players in pot</label>
+              <label for="playersInPot">Jucători în pot / Plrs in pot</label>
               <select id="playersInPot">
                 <option value="2">2 (Heads-Up)</option>
                 <option value="3">3</option>
@@ -827,8 +808,24 @@
             </div>
           </div>
 
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="heroPreAct">Acțiune Hero preflop / Hero preflop action</label>
+              <select id="heroPreAct">
+                <option value="none">None</option>
+                <option value="fold">Fold</option>
+                <option value="limp">Limp / Call</option>
+                <option value="open">Open-raise</option>
+                <option value="call">Call vs raise</option>
+                <option value="3bet">3-bet</option>
+                <option value="4bet">4-bet+</option>
+                <option value="allin">All-in</option>
+              </select>
+            </div>
+          </div>
+
           <p class="note">
-            Setează până la 3 adversari (poziție + acțiune). / Set up to 3 villains (position + action).
+            Setează până la 3 adversari (poziție + acțiune preflop). / Set up to 3 villains (position + preflop action).
             Lasă „None” dacă nu îi folosești. / Leave "None" if unused.
           </p>
 
@@ -848,7 +845,7 @@
               </select>
             </div>
             <div class="card-input">
-              <label for="villain1Act">Acțiune / Action</label>
+              <label for="villain1Act">Acțiune preflop / Preflop action</label>
               <select id="villain1Act">
                 <option value="none">None</option>
                 <option value="fold">Fold</option>
@@ -878,7 +875,7 @@
               </select>
             </div>
             <div class="card-input">
-              <label for="villain2Act">Acțiune / Action</label>
+              <label for="villain2Act">Acțiune preflop / Preflop action</label>
               <select id="villain2Act">
                 <option value="none">None</option>
                 <option value="fold">Fold</option>
@@ -908,7 +905,7 @@
               </select>
             </div>
             <div class="card-input">
-              <label for="villain3Act">Acțiune / Action</label>
+              <label for="villain3Act">Acțiune preflop / Preflop action</label>
               <select id="villain3Act">
                 <option value="none">None</option>
                 <option value="fold">Fold</option>
@@ -923,29 +920,12 @@
           </div>
         </div>
 
-        <!-- LINIA HERO & ACȚIUNI PE STRĂZI -->
+        <!-- ACȚIUNI PE STRĂZI -->
         <div style="margin-top:18px;">
-          <h2>4. Linia Hero & acțiune pe străzi / Hero line & street action</h2>
-
-          <div class="cards-row">
-            <div class="card-input">
-              <label for="heroPreflopAct">Preflop – acțiune Hero / Hero preflop</label>
-              <select id="heroPreflopAct">
-                <option value="auto" selected>Auto (în funcție de echitate) / Auto</option>
-                <option value="open">Open-raise</option>
-                <option value="limp">Limp / Call</option>
-                <option value="call">Call vs raise</option>
-                <option value="3bet">3-bet</option>
-                <option value="4bet">4-bet+</option>
-                <option value="allin">All-in</option>
-                <option value="fold">Fold</option>
-              </select>
-            </div>
-          </div>
-
+          <h2>4. Acțiuni pe străzi / Street actions</h2>
           <p class="note">
-            Setează acțiunile Hero și câtă presiune vine de la adversari pe fiecare stradă.
-            / Set Hero actions and villain pressure for each street.
+            Alege acțiuni reprezentative pe flop, turn și river pentru Hero și adversari. /
+            Pick representative actions on flop, turn and river for Hero and villains.
           </p>
 
           <!-- FLOP ACTIONS -->
@@ -953,11 +933,12 @@
             <div class="card-input">
               <label for="heroFlopAct">Flop – Hero</label>
               <select id="heroFlopAct">
-                <option value="none" selected>Nu se joacă / Not played</option>
+                <option value="none">None / –</option>
                 <option value="check">Check</option>
-                <option value="betSmall">Bet mic / Small</option>
-                <option value="betMedium">Bet mediu / Medium</option>
-                <option value="betBig">Bet mare / Big</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
                 <option value="call">Call</option>
                 <option value="raise">Raise</option>
                 <option value="allin">All-in</option>
@@ -965,13 +946,50 @@
               </select>
             </div>
             <div class="card-input">
-              <label for="flopPressure">Flop – presiune Villain / Villain pressure</label>
-              <select id="flopPressure">
-                <option value="none" selected>Pot mic / Check-through</option>
-                <option value="bet">Un bet / One bet</option>
-                <option value="multiway">Bet + calluri / Multiway</option>
-                <option value="raise">Bet + raise / Raise war</option>
-                <option value="allin">Pot all-in</option>
+              <label for="v1FlopAct">Flop – Villain 1</label>
+              <select id="v1FlopAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+          </div>
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="v2FlopAct">Flop – Villain 2</label>
+              <select id="v2FlopAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="v3FlopAct">Flop – Villain 3</label>
+              <select id="v3FlopAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
               </select>
             </div>
           </div>
@@ -981,11 +999,12 @@
             <div class="card-input">
               <label for="heroTurnAct">Turn – Hero</label>
               <select id="heroTurnAct">
-                <option value="none" selected>Nu se joacă / Not played</option>
+                <option value="none">None / –</option>
                 <option value="check">Check</option>
-                <option value="betSmall">Bet mic / Small</option>
-                <option value="betMedium">Bet mediu / Medium</option>
-                <option value="betBig">Bet mare / Big</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
                 <option value="call">Call</option>
                 <option value="raise">Raise</option>
                 <option value="allin">All-in</option>
@@ -993,13 +1012,50 @@
               </select>
             </div>
             <div class="card-input">
-              <label for="turnPressure">Turn – presiune Villain / Villain pressure</label>
-              <select id="turnPressure">
-                <option value="none" selected>Pot mic / Check-through</option>
-                <option value="bet">Un bet / One bet</option>
-                <option value="multiway">Bet + calluri / Multiway</option>
-                <option value="raise">Bet + raise / Raise war</option>
-                <option value="allin">Pot all-in</option>
+              <label for="v1TurnAct">Turn – Villain 1</label>
+              <select id="v1TurnAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+          </div>
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="v2TurnAct">Turn – Villain 2</label>
+              <select id="v2TurnAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="v3TurnAct">Turn – Villain 3</label>
+              <select id="v3TurnAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
               </select>
             </div>
           </div>
@@ -1009,11 +1065,12 @@
             <div class="card-input">
               <label for="heroRiverAct">River – Hero</label>
               <select id="heroRiverAct">
-                <option value="none" selected>Nu se joacă / Not played</option>
+                <option value="none">None / –</option>
                 <option value="check">Check</option>
-                <option value="betSmall">Bet mic / Small</option>
-                <option value="betMedium">Bet mediu / Medium</option>
-                <option value="betBig">Bet mare / Big</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
                 <option value="call">Call</option>
                 <option value="raise">Raise</option>
                 <option value="allin">All-in</option>
@@ -1021,13 +1078,50 @@
               </select>
             </div>
             <div class="card-input">
-              <label for="riverPressure">River – presiune Villain / Villain pressure</label>
-              <select id="riverPressure">
-                <option value="none" selected>Pot mic / Check-through</option>
-                <option value="bet">Un bet / One bet</option>
-                <option value="multiway">Bet + calluri / Multiway</option>
-                <option value="raise">Bet + raise / Raise war</option>
-                <option value="allin">Pot all-in</option>
+              <label for="v1RiverAct">River – Villain 1</label>
+              <select id="v1RiverAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+          </div>
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="v2RiverAct">River – Villain 2</label>
+              <select id="v2RiverAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="v3RiverAct">River – Villain 3</label>
+              <select id="v3RiverAct">
+                <option value="none">None / –</option>
+                <option value="check">Check</option>
+                <option value="bet33">Bet mic ~33%</option>
+                <option value="bet50">Bet mediu ~50%</option>
+                <option value="bet75">Bet mare ~75%</option>
+                <option value="overbet">Overbet</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
               </select>
             </div>
           </div>
@@ -1144,31 +1238,41 @@
       allin: 11
     };
 
-    // cât de agresiv e Hero (preflop + postflop)
-    const heroActionWeights = {
-      auto: 0,
+    const heroPreflopAggroWeights = {
       none: 0,
-      check: -1,
-      limp: -2,
-      call: 0,
-      betSmall: 2,
-      betMedium: 4,
-      betBig: 6,
-      raise: 6,
+      fold: -6,
+      limp: -1,
       open: 3,
-      "3bet": 6,
-      "4bet": 8,
-      allin: 9,
-      fold: -12
+      call: 0,
+      "3bet": 5,
+      "4bet": 7,
+      allin: 8
     };
 
-    // presiune pe fiecare stradă din partea villainilor
-    const streetPressureWeights = {
+    const postflopVillainWeights = {
       none: 0,
-      bet: 2,
-      multiway: 4,
-      raise: 6,
-      allin: 9
+      check: 0,
+      bet33: 3,
+      bet50: 4,
+      bet75: 5,
+      overbet: 6,
+      call: 2,
+      raise: 5,
+      allin: 7,
+      fold: -1
+    };
+
+    const postflopHeroAggroWeights = {
+      none: 0,
+      check: -1,
+      bet33: 2,
+      bet50: 3,
+      bet75: 4,
+      overbet: 5,
+      call: 1,
+      raise: 4,
+      allin: 6,
+      fold: -4
     };
 
     function sortRanks(r1, r2) {
@@ -1234,7 +1338,6 @@
       return bestHigh;
     }
 
-    // Tipul mâinii la showdown + o bandă de forță
     function getHandCategory(cards) {
       const rankCount = {};
       const suitCount = {};
@@ -1327,13 +1430,18 @@
       }
     }
 
-    function streetPressureLabel(v) {
-      switch (v) {
-        case "bet": return "bet simplu";
-        case "multiway": return "bet + calluri (multiway)";
-        case "raise": return "bet + raise";
-        case "allin": return "pot all-in";
-        default: return "pot mic / check-through";
+    function streetActionLabel(act) {
+      switch (act) {
+        case "check": return "Check";
+        case "bet33": return "Bet ~33%";
+        case "bet50": return "Bet ~50%";
+        case "bet75": return "Bet ~75%";
+        case "overbet": return "Overbet";
+        case "call": return "Call";
+        case "raise": return "Raise";
+        case "allin": return "All-in";
+        case "fold": return "Fold";
+        default: return "–";
       }
     }
 
@@ -1344,22 +1452,9 @@
       blindSize,
       heroPos,
       stage,
-      pressureScore,
-      heroAggScore,
-      heroPreflopAct
+      villainPressure,
+      heroAggro
     ) {
-      // dacă Hero a foldat preflop, nu mai are sens să calculăm altceva
-      if (stage === "preflop" && heroPreflopAct === "fold") {
-        return {
-          fold: 100,
-          call: 0,
-          shove: 0,
-          mainAction: "Fold",
-          tagClass: "tag-danger",
-          style: "Mâna este deja foldată preflop. / Hand already folded preflop."
-        };
-      }
-
       let score = (equity - 50) * 2;
 
       let posMod = 0;
@@ -1388,19 +1483,17 @@
       if (equity >= 65) score += blindPressure;
       else if (equity < 50) score -= Math.round(blindPressure / 2);
 
-      // presiune de la adversari (preflop + postflop)
-      score -= pressureScore;
+      // presiune adversari & agresivitate Hero
+      score -= villainPressure;
+      score += heroAggro;
 
-      if (equity >= 70 && pressureScore >= 8) {
+      if (equity >= 70 && villainPressure >= 8) {
         score += 6;
       }
 
       if (stage === "river" && equity >= 70) {
         score += 6;
       }
-
-      // linia lui Hero (dacă e agresiv -> împinge spre call / shove)
-      score += heroAggScore;
 
       score = Math.max(-40, Math.min(40, score));
 
@@ -1524,6 +1617,7 @@
       const playersDrop = parseInt(document.getElementById("playersInPot").value, 10);
       const blindSize = parseInt(document.getElementById("blindSize").value, 10);
       const heroPos = document.getElementById("heroPos").value;
+      const heroPreAct = document.getElementById("heroPreAct").value || "none";
 
       const villains = [
         { pos: document.getElementById("villain1Pos").value, act: document.getElementById("villain1Act").value },
@@ -1531,35 +1625,56 @@
         { pos: document.getElementById("villain3Pos").value, act: document.getElementById("villain3Act").value }
       ];
 
-      // HERO ACTIONS & STREET PRESSURE
-      const heroPreflopAct = document.getElementById("heroPreflopAct").value;
-      const heroFlopAct = document.getElementById("heroFlopAct").value;
-      const heroTurnAct = document.getElementById("heroTurnAct").value;
-      const heroRiverAct = document.getElementById("heroRiverAct").value;
-
-      const flopPressure = document.getElementById("flopPressure").value;
-      const turnPressure = document.getElementById("turnPressure").value;
-      const riverPressure = document.getElementById("riverPressure").value;
-
-      let preflopPressureScore = 0;
+      let villainPressure = 0;
       let nonFoldVillains = 0;
-      const summaryParts = [];
+      const preflopParts = [];
 
-      villains.forEach(v => {
+      villains.forEach((v, idx) => {
         if (!v.pos || v.act === "none") return;
         const w = actionWeights[v.act] || 0;
-        preflopPressureScore += w;
+        villainPressure += w;
         if (v.act !== "fold") nonFoldVillains++;
-        summaryParts.push(`${positionLabel(v.pos)}: ${actionLabel(v.act)}`);
+        preflopParts.push(`${positionLabel(v.pos)}: ${actionLabel(v.act)}`);
       });
 
-      // postflop pressure
-      const postflopPressureScore =
-        (streetPressureWeights[flopPressure] || 0) +
-        (streetPressureWeights[turnPressure] || 0) +
-        (streetPressureWeights[riverPressure] || 0);
+      if (heroPreAct !== "none") {
+        preflopParts.unshift(`Hero (${positionLabel(heroPos)}): ${actionLabel(heroPreAct)}`);
+      }
 
-      const totalPressureScore = preflopPressureScore + postflopPressureScore;
+      let heroAggro = heroPreflopAggroWeights[heroPreAct] || 0;
+
+      // postflop actions
+      const streetSummaries = [];
+
+      function handleStreet(streetLabel, heroId, v1Id, v2Id, v3Id) {
+        const heroAct = document.getElementById(heroId).value || "none";
+        const v1Act = document.getElementById(v1Id).value || "none";
+        const v2Act = document.getElementById(v2Id).value || "none";
+        const v3Act = document.getElementById(v3Id).value || "none";
+
+        if (heroAct !== "none") {
+          heroAggro += postflopHeroAggroWeights[heroAct] || 0;
+        }
+
+        [v1Act, v2Act, v3Act].forEach(act => {
+          if (act !== "none") {
+            villainPressure += postflopVillainWeights[act] || 0;
+          }
+        });
+
+        if (heroAct !== "none" || v1Act !== "none" || v2Act !== "none" || v3Act !== "none") {
+          const parts = [];
+          if (heroAct !== "none") parts.push(`Hero: ${streetActionLabel(heroAct)}`);
+          if (v1Act !== "none") parts.push(`V1: ${streetActionLabel(v1Act)}`);
+          if (v2Act !== "none") parts.push(`V2: ${streetActionLabel(v2Act)}`);
+          if (v3Act !== "none") parts.push(`V3: ${streetActionLabel(v3Act)}`);
+          streetSummaries.push(`${streetLabel}: ${parts.join(" • ")}`);
+        }
+      }
+
+      handleStreet("Flop", "heroFlopAct", "v1FlopAct", "v2FlopAct", "v3FlopAct");
+      handleStreet("Turn", "heroTurnAct", "v1TurnAct", "v2TurnAct", "v3TurnAct");
+      handleStreet("River", "heroRiverAct", "v1RiverAct", "v2RiverAct", "v3RiverAct");
 
       let effectivePlayers = Math.max(playersDrop, 1 + nonFoldVillains);
       if (effectivePlayers > tableSize) effectivePlayers = tableSize;
@@ -1688,23 +1803,11 @@
       document.getElementById("handTypeInfo").textContent = handTypeText;
 
       const villainSummary = document.getElementById("villainSummary");
-      const preflopText = summaryParts.length
-        ? `Acțiunile preflop ale celorlalți / Preflop actions: ${summaryParts.join(" • ")}`
-        : "Acțiunile preflop ale celorlalți: niciuna (pot nedeschis / pasiv). / Preflop actions: none (unopened / passive pot).";
-
-      const postflopText =
-        ` Presiune postflop – Flop: ${streetPressureLabel(flopPressure)}, ` +
-        `Turn: ${streetPressureLabel(turnPressure)}, ` +
-        `River: ${streetPressureLabel(riverPressure)}.`;
-
-      villainSummary.textContent = preflopText + " /" + postflopText;
-
-      // scor de agresivitate Hero pe toată linia
-      const heroAggScore =
-        (heroActionWeights[heroPreflopAct] || 0) +
-        (heroActionWeights[heroFlopAct] || 0) +
-        (heroActionWeights[heroTurnAct] || 0) +
-        (heroActionWeights[heroRiverAct] || 0);
+      const preflopText = preflopParts.length
+        ? `Preflop: ${preflopParts.join(" • ")}`
+        : "Preflop: niciuna (pot nedeschis / pasiv). / Preflop: none (unopened / passive).";
+      const streetsText = streetSummaries.length ? " | " + streetSummaries.join(" | ") : "";
+      villainSummary.textContent = preflopText + streetsText;
 
       const decision = computeDecisionMix(
         eq1,
@@ -1713,9 +1816,8 @@
         blindSize,
         heroPos,
         stage,
-        totalPressureScore,
-        heroAggScore,
-        heroPreflopAct
+        villainPressure,
+        heroAggro
       );
 
       document.getElementById("foldBar").style.width = `${decision.fold}%`;
