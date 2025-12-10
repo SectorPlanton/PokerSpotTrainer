@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <title>Sector_Planton – Poker Combat HUD</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- FAVICON & APP ICONS (același logo pentru toate, din link-ul tău) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png">
+  <link rel="apple-touch-icon" href="https://i.ibb.co/RTg9NnBZ/logo-PCH.png">
+  <meta name="theme-color" content="#052e16" />
+
   <style>
     * {
       box-sizing: border-box;
@@ -54,6 +61,29 @@
       gap: 10px;
       align-items: center;
       margin-bottom: 20px;
+    }
+
+    .app-header-left {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .app-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.4),
+        0 10px 25px rgba(0, 0, 0, 0.7);
+      background: #052e16;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .app-title {
@@ -406,14 +436,12 @@
 
     /* RESPONSIVE */
 
-    /* 1) Sub 1024px: o singură coloană */
     @media (max-width: 1024px) {
       .grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* 2) Sub 768px: header compact, padding mai mic, app label mutat */
     @media (max-width: 768px) {
       body {
         align-items: flex-start;
@@ -427,12 +455,13 @@
       .app-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
       }
 
       .app::before {
         position: static;
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
         right: auto;
         top: auto;
       }
@@ -449,9 +478,14 @@
       .badge {
         font-size: 0.65rem;
       }
+
+      .app-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+      }
     }
 
-    /* 3) Sub 600px: rânduri de input în coloană, cărți mai mici, tag-uri pot rupe rândul */
     @media (max-width: 600px) {
       .cards-row {
         flex-direction: column;
@@ -476,7 +510,6 @@
       }
     }
 
-    /* 4) Sub 400px: text și mai compact */
     @media (max-width: 400px) {
       .app {
         border-radius: 12px;
@@ -499,17 +532,20 @@
 <body>
   <div class="app">
     <div class="app-header">
-      <div>
-        <div class="app-title">
-          SECTOR_PLANTON
-          <span class="badge">Preflop → River • Spot Trainer</span>
+      <div class="app-header-left">
+        <img src="https://i.ibb.co/RTg9NnBZ/logo-PCH.png" alt="Poker Combat HUD logo" class="app-logo">
+        <div class="title-block">
+          <div class="app-title">
+            SECTOR_PLANTON
+            <span class="badge">Preflop → River • Spot Trainer</span>
+          </div>
+          <p class="app-subtitle">
+            Alege-ți mâna, board-ul, poziția exactă și până la 3 adversari cu acțiunile lor. /
+            Choose your hand, board, exact position and up to 3 villains with their actions.
+            HUD-ul îți dă o echitate aproximativă și un mix Fold / Call / Raise-All-In. /
+            HUD gives approximate equity and a Fold / Call / Raise-All-In mix.
+          </p>
         </div>
-        <p class="app-subtitle">
-          Alege-ți mâna, board-ul, poziția exactă și până la 3 adversari cu acțiunile lor. /
-          Choose your hand, board, exact position and up to 3 villains with their actions.
-          HUD-ul îți dă o echitate aproximativă și un mix Fold / Call / Raise-All-In. /
-          HUD gives approximate equity and a Fold / Call / Raise-All-In mix.
-        </p>
       </div>
       <div class="app-subtitle">
         Mod / Mode: <strong>Ops Room / Overlay pentru stream</strong>
@@ -887,12 +923,122 @@
           </div>
         </div>
 
+        <!-- LINIA HERO & ACȚIUNI PE STRĂZI -->
+        <div style="margin-top:18px;">
+          <h2>4. Linia Hero & acțiune pe străzi / Hero line & street action</h2>
+
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="heroPreflopAct">Preflop – acțiune Hero / Hero preflop</label>
+              <select id="heroPreflopAct">
+                <option value="auto" selected>Auto (în funcție de echitate) / Auto</option>
+                <option value="open">Open-raise</option>
+                <option value="limp">Limp / Call</option>
+                <option value="call">Call vs raise</option>
+                <option value="3bet">3-bet</option>
+                <option value="4bet">4-bet+</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="note">
+            Setează acțiunile Hero și câtă presiune vine de la adversari pe fiecare stradă.
+            / Set Hero actions and villain pressure for each street.
+          </p>
+
+          <!-- FLOP ACTIONS -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="heroFlopAct">Flop – Hero</label>
+              <select id="heroFlopAct">
+                <option value="none" selected>Nu se joacă / Not played</option>
+                <option value="check">Check</option>
+                <option value="betSmall">Bet mic / Small</option>
+                <option value="betMedium">Bet mediu / Medium</option>
+                <option value="betBig">Bet mare / Big</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="flopPressure">Flop – presiune Villain / Villain pressure</label>
+              <select id="flopPressure">
+                <option value="none" selected>Pot mic / Check-through</option>
+                <option value="bet">Un bet / One bet</option>
+                <option value="multiway">Bet + calluri / Multiway</option>
+                <option value="raise">Bet + raise / Raise war</option>
+                <option value="allin">Pot all-in</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TURN ACTIONS -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="heroTurnAct">Turn – Hero</label>
+              <select id="heroTurnAct">
+                <option value="none" selected>Nu se joacă / Not played</option>
+                <option value="check">Check</option>
+                <option value="betSmall">Bet mic / Small</option>
+                <option value="betMedium">Bet mediu / Medium</option>
+                <option value="betBig">Bet mare / Big</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="turnPressure">Turn – presiune Villain / Villain pressure</label>
+              <select id="turnPressure">
+                <option value="none" selected>Pot mic / Check-through</option>
+                <option value="bet">Un bet / One bet</option>
+                <option value="multiway">Bet + calluri / Multiway</option>
+                <option value="raise">Bet + raise / Raise war</option>
+                <option value="allin">Pot all-in</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- RIVER ACTIONS -->
+          <div class="cards-row">
+            <div class="card-input">
+              <label for="heroRiverAct">River – Hero</label>
+              <select id="heroRiverAct">
+                <option value="none" selected>Nu se joacă / Not played</option>
+                <option value="check">Check</option>
+                <option value="betSmall">Bet mic / Small</option>
+                <option value="betMedium">Bet mediu / Medium</option>
+                <option value="betBig">Bet mare / Big</option>
+                <option value="call">Call</option>
+                <option value="raise">Raise</option>
+                <option value="allin">All-in</option>
+                <option value="fold">Fold</option>
+              </select>
+            </div>
+            <div class="card-input">
+              <label for="riverPressure">River – presiune Villain / Villain pressure</label>
+              <select id="riverPressure">
+                <option value="none" selected>Pot mic / Check-through</option>
+                <option value="bet">Un bet / One bet</option>
+                <option value="multiway">Bet + calluri / Multiway</option>
+                <option value="raise">Bet + raise / Raise war</option>
+                <option value="allin">Pot all-in</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <button class="btn-primary" id="calcBtn">Calculează spotul / Calculate spot</button>
       </div>
 
       <!-- PANOU REZULTATE -->
       <div class="panel">
-        <h2>4. Forță mână & recomandare acțiune / Hand strength & action suggestion</h2>
+        <h2>5. Forță mână & recomandare acțiune / Hand strength & action suggestion</h2>
 
         <div class="results-header">
           <div class="results-main" id="mainEquity">
@@ -996,6 +1142,33 @@
       "3bet": 7,
       "4bet": 10,
       allin: 11
+    };
+
+    // cât de agresiv e Hero (preflop + postflop)
+    const heroActionWeights = {
+      auto: 0,
+      none: 0,
+      check: -1,
+      limp: -2,
+      call: 0,
+      betSmall: 2,
+      betMedium: 4,
+      betBig: 6,
+      raise: 6,
+      open: 3,
+      "3bet": 6,
+      "4bet": 8,
+      allin: 9,
+      fold: -12
+    };
+
+    // presiune pe fiecare stradă din partea villainilor
+    const streetPressureWeights = {
+      none: 0,
+      bet: 2,
+      multiway: 4,
+      raise: 6,
+      allin: 9
     };
 
     function sortRanks(r1, r2) {
@@ -1154,7 +1327,39 @@
       }
     }
 
-    function computeDecisionMix(equity, tableSize, playersInPot, blindSize, heroPos, stage, pressureScore) {
+    function streetPressureLabel(v) {
+      switch (v) {
+        case "bet": return "bet simplu";
+        case "multiway": return "bet + calluri (multiway)";
+        case "raise": return "bet + raise";
+        case "allin": return "pot all-in";
+        default: return "pot mic / check-through";
+      }
+    }
+
+    function computeDecisionMix(
+      equity,
+      tableSize,
+      playersInPot,
+      blindSize,
+      heroPos,
+      stage,
+      pressureScore,
+      heroAggScore,
+      heroPreflopAct
+    ) {
+      // dacă Hero a foldat preflop, nu mai are sens să calculăm altceva
+      if (stage === "preflop" && heroPreflopAct === "fold") {
+        return {
+          fold: 100,
+          call: 0,
+          shove: 0,
+          mainAction: "Fold",
+          tagClass: "tag-danger",
+          style: "Mâna este deja foldată preflop. / Hand already folded preflop."
+        };
+      }
+
       let score = (equity - 50) * 2;
 
       let posMod = 0;
@@ -1183,6 +1388,7 @@
       if (equity >= 65) score += blindPressure;
       else if (equity < 50) score -= Math.round(blindPressure / 2);
 
+      // presiune de la adversari (preflop + postflop)
       score -= pressureScore;
 
       if (equity >= 70 && pressureScore >= 8) {
@@ -1192,6 +1398,9 @@
       if (stage === "river" && equity >= 70) {
         score += 6;
       }
+
+      // linia lui Hero (dacă e agresiv -> împinge spre call / shove)
+      score += heroAggScore;
 
       score = Math.max(-40, Math.min(40, score));
 
@@ -1322,17 +1531,35 @@
         { pos: document.getElementById("villain3Pos").value, act: document.getElementById("villain3Act").value }
       ];
 
-      let pressureScore = 0;
+      // HERO ACTIONS & STREET PRESSURE
+      const heroPreflopAct = document.getElementById("heroPreflopAct").value;
+      const heroFlopAct = document.getElementById("heroFlopAct").value;
+      const heroTurnAct = document.getElementById("heroTurnAct").value;
+      const heroRiverAct = document.getElementById("heroRiverAct").value;
+
+      const flopPressure = document.getElementById("flopPressure").value;
+      const turnPressure = document.getElementById("turnPressure").value;
+      const riverPressure = document.getElementById("riverPressure").value;
+
+      let preflopPressureScore = 0;
       let nonFoldVillains = 0;
       const summaryParts = [];
 
       villains.forEach(v => {
         if (!v.pos || v.act === "none") return;
         const w = actionWeights[v.act] || 0;
-        pressureScore += w;
+        preflopPressureScore += w;
         if (v.act !== "fold") nonFoldVillains++;
         summaryParts.push(`${positionLabel(v.pos)}: ${actionLabel(v.act)}`);
       });
+
+      // postflop pressure
+      const postflopPressureScore =
+        (streetPressureWeights[flopPressure] || 0) +
+        (streetPressureWeights[turnPressure] || 0) +
+        (streetPressureWeights[riverPressure] || 0);
+
+      const totalPressureScore = preflopPressureScore + postflopPressureScore;
 
       let effectivePlayers = Math.max(playersDrop, 1 + nonFoldVillains);
       if (effectivePlayers > tableSize) effectivePlayers = tableSize;
@@ -1461,10 +1688,23 @@
       document.getElementById("handTypeInfo").textContent = handTypeText;
 
       const villainSummary = document.getElementById("villainSummary");
-      villainSummary.textContent =
-        summaryParts.length
-          ? `Acțiunile celorlalți / Other actions: ${summaryParts.join(" • ")}`
-          : "Acțiunile celorlalți: niciuna (pot nedeschis / pasiv). / Other actions: none (unopened / passive pot).";
+      const preflopText = summaryParts.length
+        ? `Acțiunile preflop ale celorlalți / Preflop actions: ${summaryParts.join(" • ")}`
+        : "Acțiunile preflop ale celorlalți: niciuna (pot nedeschis / pasiv). / Preflop actions: none (unopened / passive pot).";
+
+      const postflopText =
+        ` Presiune postflop – Flop: ${streetPressureLabel(flopPressure)}, ` +
+        `Turn: ${streetPressureLabel(turnPressure)}, ` +
+        `River: ${streetPressureLabel(riverPressure)}.`;
+
+      villainSummary.textContent = preflopText + " /" + postflopText;
+
+      // scor de agresivitate Hero pe toată linia
+      const heroAggScore =
+        (heroActionWeights[heroPreflopAct] || 0) +
+        (heroActionWeights[heroFlopAct] || 0) +
+        (heroActionWeights[heroTurnAct] || 0) +
+        (heroActionWeights[heroRiverAct] || 0);
 
       const decision = computeDecisionMix(
         eq1,
@@ -1473,7 +1713,9 @@
         blindSize,
         heroPos,
         stage,
-        pressureScore
+        totalPressureScore,
+        heroAggScore,
+        heroPreflopAct
       );
 
       document.getElementById("foldBar").style.width = `${decision.fold}%`;
